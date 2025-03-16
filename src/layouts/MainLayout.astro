@@ -1,0 +1,56 @@
+---
+import Layout from '../components/layout/Layout';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <Layout client:load>
+      <slot />
+    </Layout>
+    
+    <style is:global>
+      /* Mint color palette */
+      :root {
+        --mint-50: #f6fefb;
+        --mint-100: #e3fcf2;
+        --mint-200: #c2f5e2;
+        --mint-300: #9beace;
+        --mint-400: #6adab0;
+        --mint-500: #40ba8e;
+        --mint-600: #2b9672;
+        --mint-700: #236c54;
+        --mint-800: #1d4d3c;
+        --mint-900: #173026;
+      }
+      
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+          Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        background-color: #f9fafb;
+      }
+      
+      /* Utility classes for mint colors */
+      .bg-mint-100 { background-color: var(--mint-100); }
+      .bg-mint-200 { background-color: var(--mint-200); }
+      .bg-mint-300 { background-color: var(--mint-300); }
+      .bg-mint-400 { background-color: var(--mint-400); }
+      .bg-mint-500 { background-color: var(--mint-500); }
+      
+      .text-mint-800 { color: var(--mint-800); }
+    </style>
+  </body>
+</html>

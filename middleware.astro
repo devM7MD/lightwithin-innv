@@ -1,0 +1,34 @@
+import { auth } from "./utils/firebase";
+import { redirect } from 'astro/middleware';
+
+// List of protected routes that require authentication
+const protectedRoutes = [
+  '/dashboard',
+  '/account',
+  '/settings',
+  // Add other protected routes here
+];
+
+// List of auth routes that should redirect to dashboard if logged in
+const authRoutes = [
+  '/login',
+  '/register',
+  '/forgot-password'
+];
+
+export async function onRequest({ request, redirect }) {
+  const url = new URL(request.url);
+  const user = auth.currentUser;
+
+  // Check if accessing a protected route without authentication
+  if (protectedRoutes.includes(url.pathname) && !user) {
+    return redirect('/login');
+  }
+
+  // Check if accessing auth routes while authenticated
+  if (authRoutes.includes(url.pathname) && user) {
+    return redirect('/');
+  }
+
+  return;
+} 

@@ -1,0 +1,110 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Avatar from "../components/ui/Avatar";
+import Button from "../components/ui/Button";
+import { isAuthenticated } from "../utils/mongodb-server";
+
+// Server-side authentication check
+const authenticated = await isAuthenticated(Astro.request);
+
+// If not authenticated, redirect to login
+if (!authenticated) {
+  return Astro.redirect("/login");
+}
+---
+
+<MainLayout title="Account | LightWithin">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Your Account</h1>
+    
+    <!-- Account content here -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold">Account Details</h2>
+        <div>
+          <a href="/login" id="logoutBtn" class="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Logout
+          </a>
+        </div>
+      </div>
+      
+      <!-- Account details will be populated by client script -->
+      <div id="accountDetails">
+        <p class="text-gray-500">Loading your account details...</p>
+      </div>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // Simple auth check
+  function checkAuth() {
+    const userData = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+    if (!userData) {
+      window.location.href = "/login";
+      return false;
+    }
+    return true;
+  }
+  
+  // Only proceed if authenticated
+  if (checkAuth()) {
+    // Parse user data
+    const userDataString = localStorage.getItem('userData') || sessionStorage.getItem('userData');
+    const user = userDataString ? JSON.parse(userDataString) : null;
+    
+    // Handle logout
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        
+        // Clear storage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userData');
+        sessionStorage.removeItem('authToken');
+        sessionStorage.removeItem('userId');
+        sessionStorage.removeItem('userData');
+        
+        // Redirect to login using a form
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = '/login';
+        document.body.appendChild(form);
+        form.submit();
+      });
+    }
+    
+    // Populate account details
+    const accountDetails = document.getElementById("accountDetails");
+    if (accountDetails && user) {
+      let html = '<div class="space-y-4">';
+      
+      // Name
+      html += '<div><p class="text-sm text-gray-500">Name</p>';
+      const name = user.displayName || user.firstName || 'User';
+      html += `<p class="font-medium">${name}</p></div>`;
+      
+      // Email
+      html += '<div><p class="text-sm text-gray-500">Email</p>';
+      html += `<p class="font-medium">${user.email || 'No email provided'}</p></div>`;
+      
+      // Account Type
+      html += '<div><p class="text-sm text-gray-500">Account Type</p>';
+      html += `<p class="font-medium capitalize">${user.accountType || 'Basic'}</p></div>`;
+      
+      // Member Since
+      if (user.createdAt) {
+        html += '<div><p class="text-sm text-gray-500">Member Since</p>';
+        html += `<p class="font-medium">${new Date(user.createdAt).toLocaleDateString()}</p></div>`;
+      }
+      
+      html += '</div>';
+      accountDetails.innerHTML = html;
+    }
+  }
+</script>

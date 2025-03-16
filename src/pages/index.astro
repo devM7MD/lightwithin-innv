@@ -1,0 +1,241 @@
+---
+// src/pages/index.astro
+import MainLayout from "../layouts/MainLayout.astro";
+import QuestionField from "../components/dashboard/QuestionField";
+---
+
+<MainLayout currentPath="/" pageTitle="Dashboard">
+  <div
+    class="max-w-4xl mx-auto px-4 py-12 min-h-screen bg-gradient-to-b from-gray-50 to-white"
+  >
+    <div class="text-center mb-16 animate-fade-in">
+      {/* Avatar Circle with Animated Border */}
+      <div class="relative w-32 h-32 mx-auto mb-8 group">
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-blue-500 via-teal-400 to-blue-500 rounded-full animate-spin-slow blur-md opacity-75"
+        >
+        </div>
+        <div
+          class="relative w-32 h-32 bg-gradient-to-br from-teal-400 to-blue-400 rounded-full flex items-center justify-center shadow-xl"
+        >
+          <span class="text-4xl text-white font-bold">LW</span>
+        </div>
+      </div>
+      <h2
+        class="text-4xl font-bold text-gray-800 mb-3 bg-gradient-to-r from-blue-600 to-teal-400 bg-clip-text text-transparent"
+      >
+        Welcome to Your LightWithin
+      </h2>
+      <p class="text-gray-600 text-lg">
+        Track your child's daily well-being journey
+      </p>
+    </div>
+
+    <form
+      id="healthForm"
+      action="/mental-health"
+      method="GET"
+      class="space-y-8 bg-white rounded-3xl p-10 shadow-2xl
+                 border border-gray-100 backdrop-blur-lg
+                 hover:shadow-blue-100/50 transition-all duration-300"
+    >
+      <QuestionField
+        question="How was your child's sleep today?"
+        name="sleep"
+        client:load
+      />
+
+      <div
+        class="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-8"
+      >
+      </div>
+
+      <QuestionField
+        question="How was your child's appetite today?"
+        name="appetite"
+        client:load
+      />
+
+      <div
+        class="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-8"
+      >
+      </div>
+
+      <QuestionField
+        question="How was your child's mood today?"
+        name="mood"
+        client:load
+      />
+
+      <div class="flex justify-center mt-14">
+        <button
+          type="submit"
+          class="group relative inline-flex items-center justify-center
+                 bg-gradient-to-r from-blue-600 via-blue-500 to-teal-400
+                 text-white py-4 px-12 rounded-full transition-all duration-300
+                 font-semibold text-lg shadow-xl hover:shadow-2xl
+                 hover:scale-[1.02] active:scale-[0.98]
+                 overflow-hidden"
+        >
+          <span
+            class="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-blue-500 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity"
+          ></span>
+          <span class="relative flex items-center gap-2">
+            Submit Responses
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 transform group-hover:translate-x-1 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</MainLayout>
+
+<script>
+  import { db, auth } from "../utils/firebase";
+  import {
+    doc,
+    setDoc,
+    collection,
+    Timestamp,
+    query,
+    where,
+    getDocs,
+    orderBy,
+  } from "firebase/firestore";
+
+  // Function to save health record
+  async function saveHealthRecord(userId, data) {
+    const docId = `${userId}_${new Date().toISOString()}`;
+    const healthRecordRef = doc(db, `users/${userId}/healthRecords`, docId);
+
+    const healthRecord = {
+      ...data,
+      timestamp: Timestamp.now(),
+      date: new Date().toISOString().split("T")[0],
+    };
+
+    await setDoc(healthRecordRef, healthRecord);
+    return docId;
+  }
+
+  // Function to get user's health records
+  async function getUserHealthRecords(userId) {
+    const healthRecordsRef = collection(db, `users/${userId}/healthRecords`);
+    const q = query(healthRecordsRef, orderBy("timestamp", "desc"));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  }
+
+  // Form submission handler
+  document
+    .getElementById("healthForm")
+    ?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // قراءة القيم من الحقول المخفية
+      const sleepValue = document.querySelector('select[name="sleep"]')?.value;
+      const appetiteValue = document.querySelector(
+        'select[name="appetite"]'
+      )?.value;
+      const moodValue = document.querySelector('select[name="mood"]')?.value;
+
+      // التحقق من القيم
+      const emptyFields = [];
+      if (!sleepValue) emptyFields.push("Sleep");
+      if (!appetiteValue) emptyFields.push("Appetite");
+      if (!moodValue) emptyFields.push("Mood");
+
+      if (emptyFields.length > 0) {
+        alert(`Please select options for: ${emptyFields.join(", ")}`);
+        return;
+      }
+
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const healthData = {
+          sleep: sleepValue,
+          appetite: appetiteValue,
+          mood: moodValue,
+          userId: user.uid,
+          userName:
+            user.displayName || user.email?.split("@")[0] || "Anonymous",
+        };
+
+        await saveHealthRecord(user.uid, healthData);
+        window.location.href = `/mental-health?sleep=${sleepValue}&appetite=${appetiteValue}&mood=${moodValue}`;
+      } catch (error) {
+        console.error("Error processing form:", error);
+        alert("Failed to save your responses. Please try again.");
+      }
+    });
+
+  // Check authentication and load previous records when page loads
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      // Get user's previous records
+      const records = await getUserHealthRecords(user.uid);
+      console.log("User's health records loaded:", records);
+
+      // You can use these records to show history or statistics
+      // For example, you could add them to a global window variable
+      window.userHealthRecords = records;
+    } catch (error) {
+      console.error("Error loading health records:", error);
+    }
+  });
+</script>
+
+<style>
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+</style>

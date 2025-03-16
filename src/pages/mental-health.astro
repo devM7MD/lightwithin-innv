@@ -1,0 +1,655 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Mental Health Insights | LightWithin">
+  <div id="authCheck" class="hidden">
+    <div
+      class="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50/50 to-white px-4"
+    >
+      <div
+        class="text-center bg-white p-8 rounded-2xl shadow-xl border border-gray-100 max-w-md w-full"
+      >
+        <div class="mb-6">
+          <div class="relative w-20 h-20 mx-auto mb-4">
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-blue-500 via-teal-400 to-blue-500 rounded-full animate-spin-slow blur-md opacity-75"
+            >
+            </div>
+            <div
+              class="relative w-20 h-20 bg-gradient-to-br from-teal-400 to-blue-400 rounded-full flex items-center justify-center shadow-xl"
+            >
+              <span class="text-2xl text-white">LW</span>
+            </div>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Access Required</h2>
+          <p class="text-gray-600">
+            Please log in to view your wellness dashboard
+          </p>
+        </div>
+        <a
+          href="/login"
+          class="inline-block w-full bg-gradient-to-r from-blue-600 to-teal-400 text-white py-3 px-6 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
+        >
+          Log In
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="mainContent"
+    class="hidden max-w-6xl mx-auto pt-8 pb-16 px-4 min-h-screen bg-gradient-to-b from-blue-50/50 to-white"
+  >
+    <div class="text-center mb-12 animate-fade-in">
+      <div class="relative w-24 h-24 mx-auto mb-6">
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-blue-500 via-teal-400 to-blue-500 rounded-full animate-spin-slow blur-md opacity-75"
+        >
+        </div>
+        <div
+          class="relative w-24 h-24 bg-gradient-to-br from-teal-400 to-blue-400 rounded-full flex items-center justify-center shadow-xl"
+        >
+          <span class="text-3xl text-white">LW</span>
+        </div>
+      </div>
+      <h1
+        class="text-3xl font-bold text-gray-800 mb-3 bg-gradient-to-r from-blue-600 to-teal-400 bg-clip-text text-transparent"
+      >
+        Your Daily Wellness Dashboard
+      </h1>
+      <p class="text-gray-600">
+        Track and monitor your child's well-being journey
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+      <div
+        class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:shadow-blue-100/50 transition-all duration-300"
+      >
+        <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-blue-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            ></path>
+          </svg>
+          Today's Assessment
+          <span
+            id="assessmentStatus"
+            class="text-sm font-normal ml-2 px-3 py-1 rounded-full"></span>
+        </h2>
+        <div class="space-y-6" id="assessmentResults">
+          <!-- Results will be populated by JavaScript -->
+        </div>
+        <div class="mt-8">
+          <button
+            id="updateAssessment"
+            class="w-full bg-gradient-to-r from-blue-600 via-blue-500 to-teal-400 text-white py-3 px-6 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            Update Today's Assessment
+          </button>
+          <p id="nextUpdateTime" class="text-center text-sm text-gray-500 mt-2">
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:shadow-blue-100/50 transition-all duration-300"
+      >
+        <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-teal-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            ></path>
+          </svg>
+          Recommendations
+        </h2>
+        <div class="prose prose-blue" id="recommendations">
+          <!-- Recommendations will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:shadow-blue-100/50 transition-all duration-300"
+    >
+      <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6 text-purple-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          ></path>
+        </svg>
+        Progress History
+      </h2>
+      <div id="progressHistory" class="mt-4">
+        <!-- Progress history will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { db, auth } from "../utils/firebase";
+    import {
+      doc,
+      setDoc,
+      getDoc,
+      collection,
+      query,
+      where,
+      orderBy,
+      limit,
+      getDocs,
+      Timestamp,
+    } from "firebase/firestore";
+
+    let currentUser = null;
+
+    async function loadTodayAssessment() {
+      if (!currentUser) return;
+
+      try {
+        // تنسيق التاريخ بشكل صحيح
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        const todayStr = `${year}-${month}-${day}`;
+
+        console.log("Looking for records with date:", todayStr); // للتحقق من التاريخ
+
+        // محاولة القراءة المباشرة باستخدام معرف الوثيقة
+        const docId = `${todayStr}_${currentUser.uid}`;
+        const directRef = doc(
+          db,
+          "users",
+          currentUser.uid,
+          "healthRecords",
+          docId
+        );
+        const directDoc = await getDoc(directRef);
+
+        const assessmentResults = document.getElementById("assessmentResults");
+
+        if (directDoc.exists()) {
+          const data = directDoc.data();
+          console.log("Found record directly:", data);
+
+          // تحديث واجهة Today's Assessment
+          if (assessmentResults) {
+            assessmentResults.innerHTML = `
+              <div class="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-blue-50 to-blue-100/50">
+                <span class="font-medium text-gray-700">Sleep</span>
+                <span class="${getStatusColor(data.sleep)} font-semibold">${data.sleep || "No data"}</span>
+              </div>
+              <div class="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-teal-50 to-teal-100/50">
+                <span class="font-medium text-gray-700">Appetite</span>
+                <span class="${getStatusColor(data.appetite)} font-semibold">${data.appetite || "No data"}</span>
+              </div>
+              <div class="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-purple-50 to-purple-100/50">
+                <span class="font-medium text-gray-700">Mood</span>
+                <span class="${getStatusColor(data.mood)} font-semibold">${data.mood || "No data"}</span>
+              </div>
+              <div class="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100/50 mt-4">
+                <span class="font-medium text-gray-700">Overall Status</span>
+                <span class="${getOverallStatusColor(data.sleep, data.appetite, data.mood)} font-semibold">
+                  ${calculateOverallStatus(data.sleep, data.appetite, data.mood)}
+                </span>
+              </div>
+            `;
+
+            // تحديث حالة التقييم والزر
+            if (data.timestamp) {
+              const lastUpdateTime = data.timestamp.toDate();
+              updateAssessmentStatus(lastUpdateTime);
+
+              const now = new Date();
+              const hoursSinceLastUpdate =
+                (now - lastUpdateTime) / (1000 * 60 * 60);
+              updateUpdateButton(hoursSinceLastUpdate);
+
+              // تحديث التوصيات
+              const recommendationsDiv =
+                document.getElementById("recommendations");
+              if (recommendationsDiv) {
+                recommendationsDiv.innerHTML = generateRecommendations(
+                  data.sleep,
+                  data.appetite,
+                  data.mood
+                );
+              }
+            }
+          }
+        } else {
+          // إذا لم نجد السجل مباشرة، نحاول البحث باستخدام الاستعلام
+          const healthRecordsRef = collection(
+            db,
+            "users",
+            currentUser.uid,
+            "healthRecords"
+          );
+          const q = query(healthRecordsRef, where("date", "==", todayStr));
+          const querySnapshot = await getDocs(q);
+
+          console.log("Query results count:", querySnapshot.size); // للتحقق من نتائج الاستعلام
+
+          if (!querySnapshot.empty) {
+            const data = querySnapshot.docs[0].data();
+            console.log("Found record through query:", data);
+            // نفس كود تحديث الواجهة السابق
+            // ... (نفس الكود السابق لتحديث الواجهة)
+          } else {
+            console.log("No record found for today");
+            if (assessmentResults) {
+              assessmentResults.innerHTML = `
+                <div class="text-center py-8">
+                  <p class="text-gray-500 mb-4">No assessment recorded for today</p>
+                  <p class="text-gray-400">Complete your daily assessment to see results here</p>
+                </div>
+              `;
+              updateAssessmentStatus();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading today's assessment:", error);
+        if (assessmentResults) {
+          assessmentResults.innerHTML = `
+            <div class="text-center py-8">
+              <p class="text-red-500">Error loading assessment data</p>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function updateAssessmentStatus(lastUpdateTime = null) {
+      const assessmentStatus = document.getElementById("assessmentStatus");
+      const nextUpdateTime = document.getElementById("nextUpdateTime");
+
+      if (!lastUpdateTime) {
+        assessmentStatus.textContent = "Not Updated Today";
+        assessmentStatus.className =
+          "text-sm font-normal ml-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700";
+        return;
+      }
+
+      const now = new Date();
+      const hoursSinceLastUpdate = (now - lastUpdateTime) / (1000 * 60 * 60);
+
+      if (hoursSinceLastUpdate < 24) {
+        const hoursRemaining = Math.ceil(24 - hoursSinceLastUpdate);
+        assessmentStatus.textContent = "Updated Today";
+        assessmentStatus.className =
+          "text-sm font-normal ml-2 px-3 py-1 rounded-full bg-green-100 text-green-700";
+        nextUpdateTime.textContent = `Next update available in ${hoursRemaining} hours`;
+      } else {
+        assessmentStatus.textContent = "Update Available";
+        assessmentStatus.className =
+          "text-sm font-normal ml-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700";
+        nextUpdateTime.textContent = "You can update your assessment now";
+      }
+    }
+
+    function updateUpdateButton(hoursSinceLastUpdate) {
+      const updateButton = document.getElementById("updateAssessment");
+      if (updateButton) {
+        if (hoursSinceLastUpdate < 24) {
+          const hoursRemaining = Math.ceil(24 - hoursSinceLastUpdate);
+          updateButton.disabled = true;
+          updateButton.classList.add("opacity-50", "cursor-not-allowed");
+          updateButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Next update in ${hoursRemaining} hours
+          `;
+        } else {
+          updateButton.disabled = false;
+          updateButton.classList.remove("opacity-50", "cursor-not-allowed");
+          updateButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Update Today's Assessment
+          `;
+        }
+      }
+    }
+
+    document
+      .getElementById("updateAssessment")
+      ?.addEventListener("click", async () => {
+        if (!currentUser) return;
+
+        const today = new Date().toISOString().split("T")[0];
+        const recordRef = doc(
+          db,
+          `users/${currentUser.uid}/healthRecords`,
+          `${currentUser.uid}_${today}`
+        );
+        const recordSnap = await getDoc(recordRef);
+
+        if (recordSnap.exists()) {
+          const data = recordSnap.data();
+          const lastUpdateTime = data.timestamp.toDate();
+          const now = new Date();
+          const hoursSinceLastUpdate =
+            (now - lastUpdateTime) / (1000 * 60 * 60);
+
+          if (hoursSinceLastUpdate < 24) {
+            const hoursRemaining = Math.ceil(24 - hoursSinceLastUpdate);
+            alert(`Please wait ${hoursRemaining} hours before updating again.`);
+            return;
+          }
+        }
+
+        window.location.href = "/";
+      });
+
+    auth.onAuthStateChanged((user) => {
+      const authCheck = document.getElementById("authCheck");
+      const mainContent = document.getElementById("mainContent");
+
+      if (user) {
+        currentUser = user;
+        console.log("User authenticated:", user.uid);
+        authCheck.classList.add("hidden");
+        mainContent.classList.remove("hidden");
+        loadTodayAssessment();
+        loadProgressHistory();
+      } else {
+        console.log("No user authenticated");
+        authCheck.classList.remove("hidden");
+        mainContent.classList.add("hidden");
+      }
+    });
+
+    async function loadProgressHistory() {
+      if (!currentUser) return;
+
+      const historyRef = collection(
+        db,
+        `users/${currentUser.uid}/healthRecords`
+      );
+      const q = query(historyRef, orderBy("timestamp", "desc"), limit(7));
+      const querySnapshot = await getDocs(q);
+
+      const historyDiv = document.getElementById("progressHistory");
+      if (historyDiv && !querySnapshot.empty) {
+        const records = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        historyDiv.innerHTML = `
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sleep</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appetite</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mood</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Overall</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                ${records
+                  .map(
+                    (record) => `
+                  <tr class="hover:bg-gray-50 transition-colors duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      ${new Date(record.timestamp.toDate()).toLocaleDateString()}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ${getStatusColor(record.sleep)}">
+                      ${record.sleep}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ${getStatusColor(record.appetite)}">
+                      ${record.appetite}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ${getStatusColor(record.mood)}">
+                      ${record.mood}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ${getOverallStatusColor(record.sleep, record.appetite, record.mood)}">
+                      ${calculateOverallStatus(record.sleep, record.appetite, record.mood)}
+                    </td>
+                  </tr>
+                `
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        historyDiv.innerHTML = `
+          <div class="text-center text-gray-500 py-8">
+            No history available yet. Start tracking your daily assessments!
+          </div>
+        `;
+      }
+    }
+
+    function getStatusColor(status) {
+      if (!status || status === "No data") return "text-gray-400";
+
+      switch (status.toLowerCase()) {
+        case "good":
+          return "text-green-500";
+        case "average":
+          return "text-yellow-500";
+        case "bad":
+          return "text-red-500";
+        default:
+          return "text-gray-400";
+      }
+    }
+
+    function calculateOverallStatus(sleep, appetite, mood) {
+      if (
+        !sleep ||
+        !appetite ||
+        !mood ||
+        sleep === "No data" ||
+        appetite === "No data" ||
+        mood === "No data"
+      ) {
+        return "Insufficient Data";
+      }
+
+      const statusMap = {
+        good: 3,
+        average: 2,
+        bad: 1,
+      };
+
+      const total =
+        statusMap[sleep.toLowerCase()] +
+        statusMap[appetite.toLowerCase()] +
+        statusMap[mood.toLowerCase()];
+
+      if (total >= 8) return "Excellent";
+      if (total >= 6) return "Good";
+      if (total >= 4) return "Fair";
+      if (total >= 2) return "Needs Attention";
+      return "Insufficient Data";
+    }
+
+    function getOverallStatusColor(sleep, appetite, mood) {
+      const status = calculateOverallStatus(sleep, appetite, mood);
+
+      switch (status) {
+        case "Excellent":
+          return "text-green-600 font-bold";
+        case "Good":
+          return "text-green-500";
+        case "Fair":
+          return "text-yellow-500";
+        case "Needs Attention":
+          return "text-red-500 font-bold";
+        case "Insufficient Data":
+          return "text-gray-400";
+        default:
+          return "text-gray-400";
+      }
+    }
+
+    function generateRecommendations(sleep, appetite, mood) {
+      let recommendations = '<ul class="list-disc pl-5 space-y-2">';
+
+      // Sleep recommendations
+      if (sleep === "Bad") {
+        recommendations += `
+          <li>Consider establishing a consistent bedtime routine</li>
+          <li>Limit screen time at least 1 hour before bed</li>
+          <li>Ensure the bedroom is cool, dark, and quiet</li>
+        `;
+      } else if (sleep === "Average") {
+        recommendations += `
+          <li>Continue maintaining regular sleep schedule</li>
+          <li>Consider adding calming activities before bedtime</li>
+        `;
+      }
+
+      // Appetite recommendations
+      if (appetite === "Bad") {
+        recommendations += `
+          <li>Try offering smaller, more frequent meals</li>
+          <li>Include your child in meal preparation</li>
+          <li>Consider consulting with a pediatrician if this persists</li>
+        `;
+      } else if (appetite === "Average") {
+        recommendations += `
+          <li>Ensure meals are colorful and varied</li>
+          <li>Maintain a regular eating schedule</li>
+        `;
+      }
+
+      // Mood recommendations
+      if (mood === "Bad") {
+        recommendations += `
+          <li>Schedule some special one-on-one time</li>
+          <li>Encourage physical activity or outdoor play</li>
+          <li>Try to identify any potential stressors</li>
+        `;
+      } else if (mood === "Average") {
+        recommendations += `
+          <li>Continue with regular physical activity</li>
+          <li>Maintain open communication about feelings</li>
+        `;
+      }
+
+      // If everything is good
+      if (sleep === "Good" && appetite === "Good" && mood === "Good") {
+        recommendations += `
+          <li>You're doing a great job! Maintain current routines</li>
+          <li>Continue monitoring and supporting your child's health</li>
+          <li>Celebrate these positive patterns with your child</li>
+        `;
+      }
+
+      recommendations += "</ul>";
+      return recommendations;
+    }
+
+    // تحديث طريقة حفظ السجلات
+    async function saveHealthRecord(userId, data) {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+      const todayStr = `${year}-${month}-${day}`;
+
+      const docId = `${todayStr}_${userId}`;
+      const healthRecordRef = doc(db, "users", userId, "healthRecords", docId);
+
+      const healthRecord = {
+        ...data,
+        timestamp: Timestamp.now(),
+        date: todayStr,
+        userId: userId,
+      };
+
+      console.log("Saving record with ID:", docId); // للتحقق من معرف الوثيقة
+      console.log("Saving data:", healthRecord); // للتحقق من البيانات
+
+      await setDoc(healthRecordRef, healthRecord);
+      return docId;
+    }
+  </script>
+
+  <style>
+    @keyframes spin-slow {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .animate-spin-slow {
+      animation: spin-slow 8s linear infinite;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.6s ease-out forwards;
+    }
+
+    .cursor-not-allowed {
+      cursor: not-allowed;
+    }
+  </style>
+</MainLayout>

@@ -1,0 +1,336 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Register | LightWithin">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-teal-50 px-4 py-12"
+  >
+    <div class="w-full max-w-md">
+      <!-- Logo/Brand Section -->
+      <div class="text-center mb-8 animate-fade-in">
+        <div class="relative w-24 h-24 mx-auto mb-6 group">
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-blue-500 via-teal-400 to-blue-500 rounded-full animate-spin-slow blur-md opacity-75"
+          >
+          </div>
+          <div
+            class="relative w-24 h-24 bg-gradient-to-br from-teal-400 to-blue-400 rounded-full flex items-center justify-center shadow-xl"
+          >
+            <span class="text-3xl text-white font-bold">LW</span>
+          </div>
+        </div>
+        <h2
+          class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-400 bg-clip-text text-transparent"
+        >
+          Create Account
+        </h2>
+        <p class="text-gray-600 mt-2">Join us on your wellness journey</p>
+      </div>
+
+      <!-- Registration Form -->
+      <div
+        class="bg-white p-8 rounded-3xl shadow-2xl border border-gray-100 backdrop-blur-lg hover:shadow-blue-100/50 transition-all duration-300"
+      >
+        <form id="registerForm" class="space-y-6">
+          <!-- Email Input -->
+          <div>
+            <label
+              class="block text-gray-700 text-sm font-medium mb-2"
+              for="email"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <!-- Password Input -->
+          <div>
+            <label
+              class="block text-gray-700 text-sm font-medium mb-2"
+              for="password"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              placeholder="Create a password"
+              required
+            />
+          </div>
+
+          <!-- Name Input -->
+          <div>
+            <label
+              class="block text-gray-700 text-sm font-medium mb-2"
+              for="name"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+
+          <!-- Age Input -->
+          <div>
+            <label
+              class="block text-gray-700 text-sm font-medium mb-2"
+              for="age"
+            >
+              Age
+            </label>
+            <input
+              type="number"
+              id="age"
+              min="0"
+              max="120"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              placeholder="Enter your age"
+              required
+            />
+          </div>
+
+          <!-- Birth Date Input -->
+          <div>
+            <label
+              class="block text-gray-700 text-sm font-medium mb-2"
+              for="birthDate"
+            >
+              Birth Date
+            </label>
+            <input
+              type="date"
+              id="birthDate"
+              class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-200"
+              required
+            />
+          </div>
+
+          <!-- Register Button -->
+          <button
+            type="submit"
+            class="w-full group relative inline-flex items-center justify-center
+                   bg-gradient-to-r from-blue-600 via-blue-500 to-teal-400
+                   text-white py-3 px-6 rounded-xl transition-all duration-300
+                   font-semibold text-lg shadow-lg hover:shadow-xl
+                   hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <span
+              class="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-blue-500 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+            ></span>
+            <span class="relative flex items-center gap-2">
+              Create Account
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 transform group-hover:translate-x-1 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+            </span>
+          </button>
+        </form>
+
+        <!-- Sign In Link -->
+        <p class="mt-6 text-center text-gray-600">
+          Already have an account?
+          <a
+            href="/login"
+            class="text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Sign in
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // Replace Firebase imports with MongoDB client-side API
+  import { registerUser } from "../utils/mongodb";
+
+  // Check if user is already logged in
+  const checkAuthStatus = async () => {
+    const token = localStorage.getItem('authToken');
+    if (token && window.location.pathname === "/register") {
+      // Only redirect if we're on the register page
+      window.location.href = "/";
+    }
+  };
+  
+  checkAuthStatus();
+
+  const registerForm = document.getElementById("registerForm");
+
+  registerForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const fullName = document.getElementById("name").value;
+    const age = document.getElementById("age").value;
+    const birthDate = document.getElementById("birthDate").value;
+
+    try {
+      // Show loading state
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      submitButton.innerHTML = `
+        <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Creating Account...
+      `;
+      submitButton.disabled = true;
+
+      // Prepare user data for MongoDB
+      const userData = {
+        // Personal Information
+        firstName: fullName.split(" ")[0],
+        lastName: fullName.split(" ").slice(1).join(" "),
+        email: email,
+        password: password, // This will be hashed on the server
+        age: parseInt(age),
+        birthDate: birthDate,
+        displayName: fullName,
+
+        // Account Information
+        accountType: "basic",
+        isEmailVerified: false,
+
+        // Profile Status
+        photoURL: null,
+        phoneNumber: null,
+
+        // Timestamps
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+
+        // Settings & Preferences
+        emailNotifications: true,
+        language: "en",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+
+        // Usage Statistics
+        loginCount: 1,
+        lastLoginType: "web",
+
+        // Account Status
+        status: "active",
+        accountComplete: false,
+
+        // Additional Information
+        bio: "",
+        interests: [],
+        children: [],
+        healthRecords: [],
+        
+        // Settings
+        settings: {
+          theme: "light",
+          notifications: true,
+          privacy: "private"
+        }
+      };
+
+      // Register user with MongoDB API
+      const response = await registerUser(userData);
+      
+      if (response.success) {
+        // Store auth token
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('userId', response.userId);
+        
+        // Successful registration
+        console.log("Registration successful!");
+
+        // Show success message
+        submitButton.innerHTML = `
+          <svg class="h-5 w-5 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Success! Redirecting...
+        `;
+
+        // Redirect after short delay
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
+      } else {
+        throw new Error(response.message || "Registration failed");
+      }
+    } catch (error) {
+      // Handle specific error cases
+      let errorMessage = "Registration failed. Please try again.";
+
+      if (error.message.includes("duplicate")) {
+        errorMessage = "This email is already registered.";
+      } else if (error.message.includes("validation")) {
+        errorMessage = "Please check your information and try again.";
+      } else if (error.message.includes("network")) {
+        errorMessage = "Network error. Please check your connection.";
+      }
+
+      // Reset button state
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      submitButton.innerHTML = originalButtonText;
+      submitButton.disabled = false;
+
+      // Show error message
+      alert(errorMessage);
+      console.error("Registration error:", error);
+    }
+  });
+</script>
+
+<style>
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+</style>
